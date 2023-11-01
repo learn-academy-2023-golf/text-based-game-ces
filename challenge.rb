@@ -33,14 +33,15 @@ def slow_type string
     puts
 end
 
-def escape_room_description
-    slow_type("You are in a small room. Looking around, you can see a few various riddles to be solved. Choose a riddle to be solved: alphabet riddle, egg riddle, or phonetic riddle.")
-end
+
+
+
+
+
 
 random_array = [1, 2, 3]
 door_combo = random_array.map {|num| rand(10)}
 door_combo = door_combo.join("")
-print door_combo
 
 phonetic_alphabet = { a: 'alpha', b: 'bravo', c: 'charlie', d: 'delta', e: 'echo', f: 'foxtrot', g: 'golf', h: 'hotel', i: 'india', j: 'juliet', k: 'kilo', l: 'lima', m: 'mike', n: 'november', o: 'oscar', p: 'papa', q: 'quebec', r: 'romeo', s: 'sierra', t: 'tango', u: 'uniform', v: 'victor', w: 'whiskey', x: 'x-ray', y: 'yankee', z: 'zulu' }
 
@@ -55,9 +56,16 @@ locked = true
 door = false
 
 slow_type('What is your name?')
-print 'User: '
-name = gets.chomp
-
+valid_name = false
+until valid_name == true
+    print 'User: '
+    name = gets.chomp
+    if name =~ /[^a-zA-Z]/
+        slow_type ("Name cannot include numbers or symbols.")
+    else
+        valid_name = true
+    end
+end
 phonetic_array = name.downcase.split("")
 phonetic_array.map! do |letter|
     phonetic_alphabet[letter.to_sym]
@@ -96,11 +104,12 @@ until locked == false
             slow_type('look')
         end
     when 'look'
-        escape_room_description
+        slow_type("You are in a small room. Looking around, you can see a door. There are also a few different riddles to be solved. Choose a riddle to be solved: alphabet riddle, egg riddle, or phonetic riddle.")
         looked = true
     when 'alphabet riddle'
         if alphabet_riddle == true
             slow_type("How many letters are in 'the alphabet'?")
+            print "#{name}: "
             answer = gets.chomp
             if answer == '11'
                 slow_type('That answer is correct!')
@@ -116,6 +125,7 @@ until locked == false
     when 'egg riddle'
         if egg_riddle == true
             slow_type('I have 6 eggs. I broke 2, cooked 2, and ate 2. How many eggs do I have?')
+            print "#{name}: "
             answer = gets.chomp
             if answer == '6'
                 slow_type('That answer is correct!')
@@ -131,6 +141,7 @@ until locked == false
     when 'phonetic riddle'
         if phonetic_riddle == true
             slow_type('Whiskey hotel alpha tango  india sierra  yankee oscar uniform romeo  november alpha mike echo?')
+            print "#{name}: "
             answer = gets.chomp
             if answer.downcase == phonetic_name
                 slow_type('That answer is correct!')
@@ -149,14 +160,17 @@ until locked == false
         slow_type('The door is locked with a three digit combination lock.')
         end
     when 'unlock door'
+        print "#{name}: "
         answer = gets.chomp
         if answer == door_combo
-            slow_type('door unlocks')
+            slow_type('You hear a soft clicking sound.')
             locked = false
         else
-            slow_type('incorrect')
+            slow_type('Nothing happens.')
         end
+    else
+        slow_type('That command cannot be executed.')
     end
 end
 
-slow_type('You win')
+slow_type("The door opens and you are now free to leave. Congratulations, #{name}! You have successfully escaped the room!")
