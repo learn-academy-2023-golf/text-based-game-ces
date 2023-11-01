@@ -25,19 +25,37 @@
 
 #when all switches are completed door opens
 
-def escape_room_description
-    p "You are in a small room. Looking around, you can see a few various riddles to be solved. Choose a riddle to be solved: alphabet riddle, egg riddle, or phonetic riddle."
+def slow_type string
+    string.each_char do |char|
+        print char
+        sleep(0.05)
+    end
+    puts
 end
+
+def escape_room_description
+    slow_type("You are in a small room. Looking around, you can see a few various riddles to be solved. Choose a riddle to be solved: alphabet riddle, egg riddle, or phonetic riddle.")
+end
+
+random_array = [1, 2, 3]
+door_combo = random_array.map {|num| rand(10)}
+door_combo = door_combo.join("")
+print door_combo
 
 phonetic_alphabet = { a: 'alpha', b: 'bravo', c: 'charlie', d: 'delta', e: 'echo', f: 'foxtrot', g: 'golf', h: 'hotel', i: 'india', j: 'juliet', k: 'kilo', l: 'lima', m: 'mike', n: 'november', o: 'oscar', p: 'papa', q: 'quebec', r: 'romeo', s: 'sierra', t: 'tango', u: 'uniform', v: 'victor', w: 'whiskey', x: 'x-ray', y: 'yankee', z: 'zulu' }
 
-game_win = false
-
+alphabet_switch = false
 alphabet_riddle = true
+egg_switch = false
 egg_riddle = true
+phonetic_switch = false
 phonetic_riddle = true
+looked = false
+locked = true
+door = false
 
-p 'What is your name?'
+slow_type('What is your name?')
+print 'User: '
 name = gets.chomp
 
 phonetic_array = name.downcase.split("")
@@ -46,48 +64,99 @@ phonetic_array.map! do |letter|
 end
 phonetic_name = phonetic_array.join(" ")
 
-p "Welcome, #{name}! You are in an escape room. You must complete each of the riddles before you can leave. If you are unsure what to do, input commands for a list of potential actions."
+slow_type("Welcome, #{name}! You are in an escape room. You must complete each of the riddles before you can leave. If you are unsure what to do, input commands for a list of potential actions.")
 
-until game_win == true
+until locked == false
+    print "#{name}: "
     command = gets.chomp.downcase
     case command
-    when 'phonetic name'
-        p phonetic_name
+    when 'commands'
+        if door == true && looked == true
+            slow_type('commands')
+            slow_type('look')
+            slow_type('alphabet riddle')
+            slow_type('egg riddle')
+            slow_type('phonetic riddle')
+            slow_type('open door')
+            slow_type('unlock door')
+        elsif door == true && looked == false
+            slow_type('commands')
+            slow_type('look')
+            slow_type('open door')
+            slow_type('unlock door')
+        elsif looked == true && door == false
+            slow_type('commands')
+            slow_type('look')
+            slow_type('alphabet riddle')
+            slow_type('egg riddle')
+            slow_type('phonetic riddle')
+            slow_type('open door')
+        else
+            slow_type('commands')
+            slow_type('look')
+        end
     when 'look'
         escape_room_description
+        looked = true
     when 'alphabet riddle'
         if alphabet_riddle == true
-            p "How many letters are in 'the alphabet'?"
+            slow_type("How many letters are in 'the alphabet'?")
             answer = gets.chomp
             if answer == '11'
-                p 'That answer is correct!'
+                slow_type('That answer is correct!')
+                slow_type("You receive a slip of paper with the number #{door_combo[0]} on it.")
                 alphabet_switch = true
                 alphabet_riddle = false
             else
-                p 'That answer is incorrect! Try again!'
+                slow_type('That answer is incorrect! Try again!')
             end
         else
-            p 'You have already solved that riddle!'
+            slow_type('You have already solved that riddle!')
         end
     when 'egg riddle'
         if egg_riddle == true
-            p 'I have 6 eggs. I broke 2, cooked 2, and ate 2. How many eggs do I have?'
+            slow_type('I have 6 eggs. I broke 2, cooked 2, and ate 2. How many eggs do I have?')
             answer = gets.chomp
             if answer == '6'
-                p 'That answer is correct!'
+                slow_type('That answer is correct!')
+                slow_type("You receive a slip of paper with the number #{door_combo[1]} on it.")
                 egg_switch = true
                 egg_riddle = false
             else
-                p 'That answer is incorrect! Try again!'
+                slow_type('That answer is incorrect! Try again!')
             end
         else
-            p 'You have already solved that riddle!'
+            slow_type('You have already solved that riddle!')
         end
-    when 'telephone riddle'
+    when 'phonetic riddle'
         if phonetic_riddle == true
-            p 'Spell your name using the telephone alphabet.'
+            slow_type('Whiskey hotel alpha tango  india sierra  yankee oscar uniform romeo  november alpha mike echo?')
+            answer = gets.chomp
+            if answer.downcase == phonetic_name
+                slow_type('That answer is correct!')
+                slow_type("You receive a slip of paper with the number #{door_combo[2]} on it.")
+                phonetic_switch = true
+                phonetic_riddle = false
+            else
+                slow_type('That answer is incorrect! Try again!')
+            end
         else
-            p 'You have already solved that riddle!'
+            slow_type('You have already solved that riddle!')
+        end
+    when 'open door'
+        door = true
+        if locked == true
+        slow_type('The door is locked with a three digit combination lock.')
+        end
+    when 'unlock door'
+        answer = gets.chomp
+        if answer == door_combo
+            slow_type('door unlocks')
+            locked = false
+        else
+            slow_type('incorrect')
         end
     end
 end
+
+slow_type('You win')
